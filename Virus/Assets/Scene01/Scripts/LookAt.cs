@@ -16,7 +16,7 @@ public class LookAt : MonoBehaviour
     void Update()
     {
         angle = GetComponent<AngleSprite>().angle;
-        //transform.position += new Vector3(0,angle - 180,0);
-        transform.rotation = Quaternion.Euler(-42.72f,angle-180f,0f);
+        //transform.position += new Vector3(0,angle - 360,0);
+        transform.rotation = Quaternion.Euler(42.72f,angle -360,0f);
     }
 }
