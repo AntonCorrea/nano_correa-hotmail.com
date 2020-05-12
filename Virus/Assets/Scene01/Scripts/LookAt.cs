@@ -5,7 +5,9 @@ using UnityEngine;
 public class LookAt : MonoBehaviour
 {
     //public GameObject target;
-    private float angle;
+    public float angle= 42.72f;
+    public float angleToCamera;
+    //public float smoothCoef;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,8 +17,17 @@ public class LookAt : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        angle = GetComponent<AngleSprite>().angle;
-        //transform.position += new Vector3(0,angle - 360,0);
-        transform.rotation = Quaternion.Euler(42.72f,angle -360,0f);
+
+        //angleToCamera = GetComponent<AngleSprite>().angleToCamera;
+        angleToCamera = Mathf.Rad2Deg * Mathf.Atan2(Camera.main.transform.position.z - transform.position.z,
+                                    Camera.main.transform.position.x - transform.position.x);
+        transform.rotation = Quaternion.Euler(angle,-90 - angleToCamera ,transform.rotation.eulerAngles.z);
+
+
+    }
+
+    private void FixedUpdate()
+    {
+        //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(42.72f, angle - 360, 0f),Time.deltaTime * smoothCoef);
     }
 }

@@ -1,28 +1,43 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class AngleSprite : MonoBehaviour
 {
-    //public AngleToCamera angleToCamera;
-
-    public float angle;
-    public GameObject pivot;
-    private AngleToCamera angleToCamera;
-    public SpriteRenderer spriteRenderer;
-    public Sprite[] sprite;
+    public float angleToCamera,angleToDestination,angleToSprite;
+    //public GameObject controller;
+    public NavMeshAgent navAgent;
+    public Vector3 destination;
+    public float velocity;
+    //public GameObject spritePivot;
+    //private SpriteRenderer spriteRenderer;
+   // public Sprite[] sprite;
+    private Animator animator;
     // Start is called before the first frame update
     void Start()
     {
-        angleToCamera = pivot.GetComponent<AngleToCamera>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-         
+        //spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>(); 
     }
 
     // Update is called once per frame
     void Update()
     {
-        angle = angleToCamera.angle;
+        destination = navAgent.destination;
+        velocity = navAgent.velocity.sqrMagnitude;
+        animator.SetFloat("velocity", velocity);
+
+        angleToCamera = GetComponent<LookAt>().angleToCamera;
+       
+        if (Vector3.Distance(transform.position, destination) > 2f)
+        {
+            angleToDestination = Mathf.Rad2Deg * Mathf.Atan2(destination.z - transform.position.z,
+                                                        destination.x - transform.position.x);
+        }
+        
+        angleToSprite = (angleToCamera - angleToDestination);
+
         //entre 337.5 y 22.5 es el sprite 2
         //asi que sumo y resto para que de 0 a 45 sea el sprite 0
         /*angle += 22.5f + 45 + 45;
@@ -30,40 +45,43 @@ public class AngleSprite : MonoBehaviour
         //asigno el sprite
         spriteRenderer.sprite = sprite[(int)Mathf.Floor(angle / 45)];*/
 
+        if (angleToSprite < 0)
+        {
+            angleToSprite = 360 + angleToSprite;
+        }
+        if (angleToSprite > 297.5 && angleToSprite < 337.5)
+        {
+            animator.SetFloat("direction", 0);            
+        }
+        if (angleToSprite > 337.5 || angleToSprite < 22.5)
+        {
+            animator.SetFloat("direction", 1);            
+        }
+        if (angleToSprite > 22.5 && angleToSprite < 67.5)
+        {
+            animator.SetFloat("direction", 2);            
+        }
+        if (angleToSprite > 67.5 && angleToSprite < 112.5)
+        {
+            animator.SetFloat("direction", 3);            
+        }
+        if (angleToSprite > 112.5 && angleToSprite < 157.5)
+        {            
+            animator.SetFloat("direction", 4);
+        }
+        if (angleToSprite > 157.5 && angleToSprite < 202.5)
+        {            
+            animator.SetFloat("direction", 5);
+        }
+        if (angleToSprite > 202.5 && angleToSprite < 247.5)
+        {          
+            animator.SetFloat("direction", 6);
+        }
+        if (angleToSprite > 247.5 && angleToSprite < 297.5)
+        {           
+            animator.SetFloat("direction", 7);
+        }
 
-        
-        if (angle > 337.5 || angle < 22.5)
-        {
-            spriteRenderer.sprite = sprite[2];
-        }
-        if (angle > 22.5 && angle < 67.5)
-        {
-            spriteRenderer.sprite = sprite[3];
-        }
-        if (angle > 67.5 && angle < 112.5)
-        {
-            spriteRenderer.sprite = sprite[4];
-        }
-        if (angle > 112.5 && angle < 157.5)
-        {
-            spriteRenderer.sprite = sprite[5];
-        }
-        if (angle > 157.5 && angle < 202.5)
-        {
-            spriteRenderer.sprite = sprite[6];
-        }
-        if (angle > 202.5 && angle < 247.5)
-        {
-            spriteRenderer.sprite = sprite[7];
-        }
-        if (angle > 247.5 && angle < 297.5)
-        {
-            spriteRenderer.sprite = sprite[0];
-        }
-        if (angle > 297.5 && angle < 337.5)
-        {
-            spriteRenderer.sprite = sprite[1];
-        }
 
     }
 }
